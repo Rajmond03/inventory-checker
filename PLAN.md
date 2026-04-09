@@ -11,11 +11,12 @@ Input:
         -Name
         -current_inventory
         -minimum_inventory
+
 Output:
 
     - output/inventory_status.xlsx
     - contains all items with status column
-    -separate list of problematic items (Warning + Critical)
+    - separate list of problematic items (Warning + Critical)
 
 Process stages:
 
