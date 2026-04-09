@@ -1,6 +1,6 @@
 import pandas as pd
 from pathlib import Path
-
+import numpy as np
 df = pd.read_excel("data/inventory.xlsx")
 
 def validate_inventory(df):
@@ -17,9 +17,6 @@ def validate_inventory(df):
         if col not in df.columns:
             errors.append(f"Missing column: {col}")
 
-    if errors:
-        return errors
-
     if (df["Inventory"] < 0).any():
         errors.append("Negative values in Inventory column")
 
@@ -30,11 +27,23 @@ def validate_inventory(df):
         errors.append("Item number must be a 5-digit number")
 
     cols = ["Item number", "Inventory", "Minimum"]
-
     converted = pd.to_numeric(df[cols].stack(), errors = "coerce")
 
     if converted.isna().any():
         errors.append("All values must be numeric in selected columns")
+
+    if errors:
+        return errors
+
+conditions = [
+    df["Inventory"] > df["minimum_inventory"],
+    df["Inventory"] == df["minimum_inventory"],
+    df["Inventory"] < df["minimum_inventory"]
+]
+
+choices = ["OK", "Warning", "Critical"]
+
+df["Status"] = np.select(conditions, choices)
 
     
 
